@@ -1,30 +1,56 @@
 'use strict'
+const querystring = require('querystring');
+const fs = require('fs');
+const formidable = require('formidable');
 
-const exec = require('child_process').exec;
-
-function start() {
+function start(response) {
   console.log("Request handler 'start' was called.");
-  let content = 'empty';
 
-  exec('ls -lah', function (error, stdout, stderr) {
-    content = stdout;
-  });
+  let body = '<html>'+
+    '<head>'+
+    '<meta http-equiv="Content-Type" '+
+    'content="text/html; charset=UTF-8" />'+
+    '</head>'+
+    '<body>'+
+    '<form action="/upload" enctype="multipart/form-data" '+ 'method="post">'+
+    '<input type="file" name="upload" multiple="multiple">'+
+    '<input type="submit" value="Upload file" />'
+    '</form>'+
+    '</body>'+
+    '</html>';
 
-  return content;
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.write(body);
+    response.end();
 }
 
-// function sleep(milliSeconds) {
-//   let startTime = new Date().getTime();
-//   while (new Date().getTime() < startTime + milliSeconds);
-// }
-
-// sleep(10000);
-// return 'Hello Start';
-
-function upload() {
+function upload(response, request) {
   console.log("Request handle 'upload' was called.");
-  return 'Hello Upload';
+
+  let form = new formidable.IncomingForm();
+  console.log('about to parse'); 
+  form.parse(request, function(error, fields, files) {
+    console.log('parsing done');
+
+    fs.rename(files.upload.path, '/tmp/test/png', function(error) {
+      if (error) {
+        fs.unlink('/tmp/test.png');
+        fs.rename(files.upload.path, '/tmp/test.png');
+      }
+}); 
+  response.writeHead(200, {'Content-Type': 'text/html'});
+  response.write('received image:<br/>');
+  response.write('<img src="/show" />');
+  response.end();
+}); 
+}
+
+function show(response) {
+  console.log("Request handle 'show' was called.");
+  response.writeHead(200, {'Content-Type': 'image/png'});
+  fs.createReadStream('/tmp/test.png').pipe(response);
 }
 
 exports.start = start;
 exports.upload = upload;
+exports.show = show;

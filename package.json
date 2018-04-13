@@ -1,0 +1,27 @@
+{
+  "name": "beginner-book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "formidable": "^1.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "dog",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vibecastor/node-beginner-book.git"
+  },
+  "keywords": [
+    "dog"
+  ],
+  "author": "castor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vibecastor/node-beginner-book/issues"
+  },
+  "homepage": "https://github.com/vibecastor/node-beginner-book#readme"
+}
